@@ -3,25 +3,39 @@
 namespace SimpleUser\Model;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\MappedSuperclass
+ */
 abstract class User implements UserInterface, \Serializable
 {
     /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     *
      * @var int|null
      */
     protected $id;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     *
      * @var string|null
      */
     protected $email;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     *
      * @var string|null
      */
     protected $password;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     *
      * @var string|null
      */
     protected $salt;
@@ -145,7 +159,7 @@ abstract class User implements UserInterface, \Serializable
      * @param string $serialized
      * @return User
      */
-    public function unserialize(string $serialized): self
+    public function unserialize($serialized): self
     {
         list (
             $this->id,
