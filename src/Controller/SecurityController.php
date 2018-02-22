@@ -25,7 +25,7 @@ class SecurityController extends Controller
         $session->remove(Security::AUTHENTICATION_ERROR);
         $form = $this->createForm(UserType::class);
 
-        return $this->render('@SimpleUserBundle/Security/login.html.twig',[
+        return $this->render('@SimpleUser/Security/login.html.twig',[
             'error' => $error,
             'form' => $form->createView(),
         ]);
