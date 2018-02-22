@@ -10,10 +10,13 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use SimpleUser\Form\UserType;
 
 class SecurityController extends Controller
 {
-
+    /**
+     * @param Request $request
+     */
     public function login(Request $request)
     {
         $session = $request->getSession();
@@ -24,6 +27,7 @@ class SecurityController extends Controller
 
         $session->remove(Security::AUTHENTICATION_ERROR);
 
+        $form = $this->createForm(UserType::class);
         $formBuilder = $this->createFormBuilder()
             ->add(
                 '_username',
@@ -43,6 +47,7 @@ class SecurityController extends Controller
                 ]
             )
             ->add('submit', SubmitType::class, array('label' => 'Sign In'));
+
         $form = $formBuilder->getForm();
 
         return $this->render('Security/login.html.twig',[

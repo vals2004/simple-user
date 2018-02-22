@@ -11,23 +11,30 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class LoginType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('_username', EmailType::class, [
-
+                'required' => true,
+                'label' => 'Email',
+                'data' => $lastUsername,
             ])
             ->add('_password', PasswordType::class, [
-
+                'required' => true,
+                'label' => 'Password',
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, ['label' => 'Sign In']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @return string
+     */
+    public function getBlockPrefix()
     {
-        $resolver->setDefaults([
-            'data_class' => CvMessage::class,
-            'validation_groups' => ['Default'],
-        ]);
+        return '';
     }
 }
