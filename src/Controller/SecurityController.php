@@ -33,7 +33,6 @@ class SecurityController extends Controller
     }
 
     public function loginCheck() {
-        dump(111);exit;
     }
 
     public function logout()

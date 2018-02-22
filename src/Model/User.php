@@ -4,11 +4,12 @@ namespace SimpleUser\Model;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class User implements UserInterface, \Serializable
+abstract class User implements UserInterface, \Serializable, EquatableInterface
 {
     /**
      * @ORM\Id
@@ -178,5 +179,21 @@ abstract class User implements UserInterface, \Serializable
     public function __toString(): string
     {
         return (string) $this->getUsername();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        if ($this->id !== $user->getId()) {
+            return false;
+        }
+
+        if ($this->email !== $user->getUsername()) {
+            return false;
+        }
+
+        return true;
     }
 }

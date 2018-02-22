@@ -7,24 +7,12 @@ services:
     simple_user.user_manager:
         class: SimpleUser\Service\UserManager
         arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%']
+
     simple_user.password_subscriber:
         class: SimpleUser\Events\UserPasswordSubscriber
         arguments: ['@security.encoder_factory']
         tags:
           - { name: doctrine.event_subscriber, connection: default }
-    simple_user.authentication_listener:
-        class: SimpleUser\Events\AuthenticationListener
-        arguments: ['@simple_user.login_manager', '%simple_user.firewall_name%']
-        tags:
-            - { name: kernel.event_listener, event: security.authentication.success, method: onAuthenticationSuccess }
-    simple_user.login_manager:
-        class: SimpleUser\Service\LoginManager
-        arguments:
-             - '@security.token_storage'
-             - '@security.user_checker'
-             - '@security.authentication.session_strategy'
-             - '@request_stack'
-             - '@session'
     SimpleUser\Command\CreateUserCommand:
         calls:
           - method: setUserManager
