@@ -5,9 +5,12 @@ namespace SimpleUser\Model;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
+ * @UniqueEntity("email")
  */
 abstract class User implements UserInterface, \Serializable, EquatableInterface
 {
@@ -21,8 +24,8 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=false)
-     *
+     * @ORM\Column(type="string", length=100, nullable=false, unique=true)
+     * @Assert\Email()
      * @var string|null
      */
     protected $email;
