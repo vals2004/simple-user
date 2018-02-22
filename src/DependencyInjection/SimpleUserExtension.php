@@ -17,7 +17,7 @@ class SimpleUserExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        #$container->setParameter('simple_user.user_class', $config['user_class']);
+        $container->setParameter('simple_user.user_class', $config['user_class']);
         #$container->setParameter('simple_user.firewall_name', $config['firewall_name']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

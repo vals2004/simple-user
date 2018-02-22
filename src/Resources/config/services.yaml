@@ -1,6 +1,16 @@
 services:
+    simple_user.user_manager:
+        class: SimpleUser\Service\UserManager
+        arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%']
     simple_user.subscriber:
         class: SimpleUser\Events\UserSubscriber
-        arguments: '@security.password_encoder'
+        arguments: ['@security.password_encoder']
         tags:
           - { name: doctrine.event_subscriber, connection: default }
+    SimpleUser\Command\CreateUserCommand:
+        calls:
+          - method: setUserManager
+            arguments:
+              - '@simple_user.user_manager'
+        tags:
+            - { name: 'console.command', command: 'simple-user:create' }
