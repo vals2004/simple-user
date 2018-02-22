@@ -6,22 +6,22 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
-class UserSubscriber implements EventSubscriber
+class UserPasswordSubscriber implements EventSubscriber
 {
     /**
-     * @var UserPasswordEncoderInterface
+     * @var EncoderFactoryInterface
      */
-    private $passwordEncoder;
+    private $encoderFactory;
 
     /**
-     * Constructor
      *
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param EncoderFactoryInterface $encoderFactory
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EncoderFactoryInterface $encoderFactory)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->encoderFactory = $encoderFactory;
     }
 
     /**
@@ -73,18 +73,15 @@ class UserSubscriber implements EventSubscriber
     }
 
     /**
-     * @param UserInterface $entity
+     * @param UserInterface $user
      */
-    private function encodePassword(UserInterface $entity)
+    private function encodePassword(UserInterface $user)
     {
-        if (empty($entity->getPassword())) {
+        if (empty($user->getPassword())) {
             return;
         }
 
-        $encoded = $this->passwordEncoder->encodePassword(
-            $entity,
-            $entity->getPassword()
-        );
-        $entity->setPassword($encoded);
+        $hash = $this->encoderFactory->getEncoder($user)->encodePassword($user->getPassword(), $user->getSalt());
+        $user->setPassword($hash);
     }
 }

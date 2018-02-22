@@ -150,7 +150,7 @@ abstract class User implements UserInterface, \Serializable
     {
         return serialize([
             $this->id,
-            $this->username,
+            $this->email,
             $this->password,
         ]);
     }
@@ -163,7 +163,7 @@ abstract class User implements UserInterface, \Serializable
     {
         list (
             $this->id,
-            $this->username,
+            $this->email,
             $this->password,
             ) = unserialize($serialized);
 

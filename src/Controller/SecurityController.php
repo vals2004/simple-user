@@ -20,24 +20,22 @@ class SecurityController extends Controller
     public function login(Request $request)
     {
         $session = $request->getSession();
-
         $lastUsername = $session->get(Security::LAST_USERNAME) ?? '';
         $error = $session->get(Security::AUTHENTICATION_ERROR);
         $session->remove(Security::AUTHENTICATION_ERROR);
         $form = $this->createForm(UserType::class);
 
-        return $this->render('@SimpleUser/Security/login.html.twig',[
+        return $this->render('@SimpleUserBundle/Resources/view/Security/login.html.twig',[
             'error' => $error,
             'form' => $form->createView(),
         ]);
 
     }
 
-    public function login_check()
-    {
+    public function loginCheck() {
     }
 
-    public function logoutAction()
+    public function logout()
     {
     }
 

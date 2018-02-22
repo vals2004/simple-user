@@ -1,10 +1,15 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
     simple_user.user_manager:
         class: SimpleUser\Service\UserManager
         arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%']
-    simple_user.subscriber:
-        class: SimpleUser\Events\UserSubscriber
-        arguments: ['@security.password_encoder']
+    simple_user.password_subscriber:
+        class: SimpleUser\Events\UserPasswordSubscriber
+        arguments: ['@security.encoder_factory']
         tags:
           - { name: doctrine.event_subscriber, connection: default }
     SimpleUser\Command\CreateUserCommand:

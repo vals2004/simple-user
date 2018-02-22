@@ -1,3 +1,11 @@
 simple_user_login:
     path: /login
     controller: SimpleUser\Controller\SecurityController::login
+
+simple_user_login_check:
+    path: /login_check
+    controller: SimpleUser\Controller\SecurityController::loginCheck
+
+simple_user_logout:
+    path: /logout
+    controller: SimpleUser\Controller\SecurityController::logout
