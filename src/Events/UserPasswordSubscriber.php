@@ -4,6 +4,7 @@ namespace SimpleUser\Events;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use SimpleUser\Helpers\SaltHelper;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
@@ -81,7 +82,14 @@ class UserPasswordSubscriber implements EventSubscriber
             return;
         }
 
-        $hash = $this->encoderFactory->getEncoder($user)->encodePassword($user->getPassword(), $user->getSalt());
+        $salt = $user->getSalt();
+
+        if (empty($salt)) {
+            $salt = SaltHelper::createSalt($user->getEmail());
+            $user->setSalt($salt);
+        }
+
+        $hash = $this->encoderFactory->getEncoder($user)->encodePassword($user->getPassword(), $salt);
         $user->setPassword($hash);
     }
 }
