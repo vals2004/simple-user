@@ -6,7 +6,8 @@
   },
   "autoload": {
     "psr-4": {
-      "SimpleUser\\": "src/"
+      "SimpleUser\\": "src/",
+      "": "src/"
     }
   }
 }

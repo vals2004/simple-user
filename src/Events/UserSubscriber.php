@@ -5,7 +5,7 @@ namespace SimpleUser\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use SimpleUser\Model\User as User;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserSubscriber implements EventSubscriber
 {
@@ -41,7 +41,7 @@ class UserSubscriber implements EventSubscriber
     public function preUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if (!$entity instanceof User) {
+        if (!$entity instanceof UserInterface) {
             return;
         }
 
@@ -65,7 +65,7 @@ class UserSubscriber implements EventSubscriber
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if (!$entity instanceof User) {
+        if (!$entity instanceof UserInterface) {
             return;
         }
 
@@ -73,9 +73,9 @@ class UserSubscriber implements EventSubscriber
     }
 
     /**
-     * @param User $entity
+     * @param UserInterface $entity
      */
-    private function encodePassword(User $entity)
+    private function encodePassword(UserInterface $entity)
     {
         if (empty($entity->getPassword())) {
             return;
