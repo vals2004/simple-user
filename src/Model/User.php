@@ -41,6 +41,7 @@ abstract class User implements UserInterface, \Serializable
     protected $salt;
 
     /**
+     * @ORM\Column(type="array", nullable=true)
      * @var array
      */
     protected $roles = [];
@@ -141,6 +142,7 @@ abstract class User implements UserInterface, \Serializable
 
     public function eraseCredentials()
     {
+        $this->password = null;
     }
 
     /**
