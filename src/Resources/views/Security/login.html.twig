@@ -6,30 +6,7 @@
 </head>
 <body>
 {% block simple_user_login %}
-    <div class="form-wrapper">
-        {{ form_start(form, { 'action': path('simple_user_login_check'), 'method': 'post'}) }}
-        <h1>{{ 'Login'|trans() }}</h1>
-        <div class="input-group">
-            {{ form_label(form._username) }}
-            {{ form_widget(form._username) }}
-        </div>
-
-        <div class="input-group">
-            {{ form_label(form._password) }}
-            {{ form_widget(form._password) }}
-        </div>
-
-        {% if error %}
-            <div class="form-error">
-                {{ error.message|trans() }}
-            </div>
-        {% endif %}
-
-        <div class="auth-btn-section">
-            {{ form_widget(form.submit) }}
-        </div>
-        {{ form_end(form) }}
-    </div>
+    {% include '@SimpleUser/Security/login_form.html.twig' with {'form': form, 'error': error} %}
 {% endblock simple_user_login %}
 </body>
 </html>
