@@ -20,14 +20,14 @@ abstract class User implements UserInterface, \Serializable
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=100, nullable=false)
      *
      * @var string|null
      */
     protected $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=100, nullable=false)
      *
      * @var string|null
      */

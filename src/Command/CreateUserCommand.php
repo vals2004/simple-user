@@ -20,7 +20,7 @@ class CreateUserCommand extends Command
     {
         $this
             ->setName('app:create-user')
-            ->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')
+            ->addArgument('email', InputArgument::REQUIRED, 'The username of the user.')
             ->addArgument('password', InputArgument::REQUIRED, 'The password of the user.')
             ->addArgument(
                 'roles',

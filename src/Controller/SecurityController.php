@@ -22,35 +22,11 @@ class SecurityController extends Controller
         $session = $request->getSession();
 
         $lastUsername = $session->get(Security::LAST_USERNAME) ?? '';
-
         $error = $session->get(Security::AUTHENTICATION_ERROR);
-
         $session->remove(Security::AUTHENTICATION_ERROR);
-
         $form = $this->createForm(UserType::class);
-        $formBuilder = $this->createFormBuilder()
-            ->add(
-                '_username',
-                EmailType::class,
-                [
-                    'required' => true,
-                    'label' => 'Email',
-                    'data' => $lastUsername,
-                ]
-            )
-            ->add(
-                '_password',
-                PasswordType::class,
-                [
-                    'required' => true,
-                    'label' => 'Password',
-                ]
-            )
-            ->add('submit', SubmitType::class, array('label' => 'Sign In'));
 
-        $form = $formBuilder->getForm();
-
-        return $this->render('Security/login.html.twig',[
+        return $this->render('@SimpleUser/Security/login.html.twig',[
             'error' => $error,
             'form' => $form->createView(),
         ]);
