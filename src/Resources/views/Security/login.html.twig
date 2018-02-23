@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>{{ 'Login'|trans() }}</title>
-</head>
-<body>
-{% block simple_user_login %}
-    {% include '@SimpleUser/Security/login_form.html.twig' with {'form': form, 'error': error} %}
-{% endblock simple_user_login %}
-</body>
-</html>
+{% extends '@SimpleUser/base.html.twig' %}
+
+{% block title %}{{ 'Login'|trans() }}{% endblock%}
+
+{% block body %}
+    {% include '@SimpleUser/Security/_form.html.twig' with {'form': form, 'error': error} %}
+{% endblock  %}

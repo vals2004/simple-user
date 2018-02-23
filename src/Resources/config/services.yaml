@@ -6,7 +6,7 @@ services:
 
     simple_user.user_manager:
         class: SimpleUser\Service\UserManager
-        arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%']
+        arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%', '%simple_user.role_class%']
 
     simple_user.password_subscriber:
         class: SimpleUser\Events\UserPasswordSubscriber

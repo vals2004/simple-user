@@ -23,4 +23,16 @@ interface SimpleUserInterface extends UserInterface, \Serializable, EquatableInt
      * @return SimpleUserInterface
      */
     public function setEmail(string $email): self;
+
+    /**
+     * @param null|string $password
+     * @return SimpleUserInterface
+     */
+    public function setPassword(?string $password): self;
+
+    /**
+     * @param null|string $salt
+     * @return SimpleUserInterface
+     */
+    public function setSalt(?string $salt): self;
 }

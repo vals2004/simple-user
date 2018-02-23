@@ -87,9 +87,9 @@ abstract class User implements SimpleUserInterface
 
     /**
      * @param null|string $password
-     * @return User
+     * @return SimpleUserInterface
      */
-    public function setPassword(?string $password): self
+    public function setPassword(?string $password): SimpleUserInterface
     {
         $this->password = $password;
         return $this;
@@ -105,9 +105,9 @@ abstract class User implements SimpleUserInterface
 
     /**
      * @param null|string $salt
-     * @return User
+     * @return SimpleUserInterface
      */
-    public function setSalt(?string $salt): self
+    public function setSalt(?string $salt): SimpleUserInterface
     {
         $this->salt = $salt;
 

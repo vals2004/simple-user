@@ -18,6 +18,7 @@ class SimpleUserExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         $container->setParameter('simple_user.user_class', $config['user_class']);
+        $container->setParameter('simple_user.role_class', $config['role_class']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');

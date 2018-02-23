@@ -19,13 +19,20 @@ class UserManager
     protected $simpleUserClass;
 
     /**
+     * @var string
+     */
+    protected $simpleUserRoleClass;
+
+    /**
      * @param EntityManagerInterface $em
      * @param string $simpleUserClass
+     * @param string $simpleUserRoleClass
      */
-    public function __construct(EntityManagerInterface $em, $simpleUserClass)
+    public function __construct(EntityManagerInterface $em, string $simpleUserClass, string $simpleUserRoleClass)
     {
         $this->simpleUserClass = $simpleUserClass;
         $this->em = $em;
+        $this->simpleUserRoleClass = $simpleUserRoleClass;
     }
 
     /**
@@ -41,7 +48,10 @@ class UserManager
         $user->setPassword($password);
         $user->setSalt(SaltHelper::createSalt($email));
         foreach ($roles as $role) {
-            $user->addRole($role);
+            $role = $this->em->getRepository($this->simpleUserRoleClass)->findOneBy(['name' => $role]);
+            if ($role) {
+                $user->addRole($role);
+            }
         }
 
         $this->em->persist($user);

@@ -1,0 +1,7 @@
+{% extends '@SimpleUser/base.html.twig' %}
+
+{% block title %}{{ 'Registration'|trans() }}{% endblock%}
+
+{% block body %}
+    {% include '@SimpleUser/Registration/_form.html.twig' with {'form': form } %}
+{% endblock  %}
