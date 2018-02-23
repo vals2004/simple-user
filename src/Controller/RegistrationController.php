@@ -12,16 +12,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SimpleUser\Interfaces\SimpleUserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegistrationController extends Controller
 {
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param MailerBuilderService $mailerBuilder
+     * @param EventDispatcherInterface $dispatcher
      * @return Response
      */
-    public function index(Request $request, EntityManagerInterface $entityManager, MailerBuilderService $mailerBuilder)
-    {
+    public function index(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MailerBuilderService $mailerBuilder,
+        EventDispatcherInterface $dispatcher
+    ) {
         $userClass = $this->getParameter('simple_user.user_class');
         /** @var SimpleUserInterface $user */
         $user = new $userClass();
@@ -48,9 +57,6 @@ class RegistrationController extends Controller
                 $user->getRoles()
             );
             $this->get('security.token_storage')->setToken($token);
-            $this->get('session')->set(
-                '_security_' . $this->getParameter('simple_user.firewall_name'), serialize($token)
-            );
 
             $mailerBuilder->setTemplate('@SimpleUser/Email/registration.html.twig', ['user' => $user])
                 ->setSubject('Registration complete')
@@ -59,11 +65,10 @@ class RegistrationController extends Controller
                 ->send();
 
 
-            return $this->redirect($request->getSession()
-                ->get(
-                    sprintf('_security.%s.target_path', $this->getParameter('simple_user.firewall_name'))
-                )
-            );
+            $loginEvent = new InteractiveLoginEvent($request, $token);
+            $dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+
+            return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
 
         return $this->render('@SimpleUser/Registration/index.html.twig',[

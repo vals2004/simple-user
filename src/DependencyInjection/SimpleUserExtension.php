@@ -22,7 +22,7 @@ class SimpleUserExtension extends Extension
 
         $container->setParameter('simple_user.firewall_name', $config['firewall_name']);
         $container->setParameter('simple_user.email_from', $config['email']['from']);
-
+        $container->setParameter('simple_user.redirect_after_login', $config['redirect_after_login']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
