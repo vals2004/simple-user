@@ -2,17 +2,19 @@
 
 namespace SimpleUser\Model;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\EquatableInterface;
+use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use SimpleUser\Interfaces\SimpleUserInterface;
 
 /**
  * @ORM\MappedSuperclass
  * @UniqueEntity("email")
  */
-abstract class User implements UserInterface, \Serializable, EquatableInterface
+abstract class User implements SimpleUserInterface
 {
     /**
      * @ORM\Id
@@ -44,11 +46,20 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
      */
     protected $salt;
 
-    /**
-     * @ORM\Column(type="array", nullable=true)
-     * @var array
-     */
-    protected $roles = [];
+   /**
+    * @ORM\ManyToMany(targetEntity="Phonenumber")
+    * @ORM\JoinTable(name="simple_user_to_role",
+    *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", unique=true)}
+    * )
+    * @var
+    */
+    private $roles;
+
+    public function __construct() {
+        $this->roles = new ArrayCollection();
+    }
+
 
     /**
      * @return int|null
@@ -57,8 +68,7 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
     {
         return $this->id;
     }
-
-
+    
     /**
      * @return null|string
      */
@@ -71,7 +81,7 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
      * @param null|string $email
      * @return User
      */
-    public function setEmail(?string $email): self
+    public function setEmail(?string $email): SimpleUserInterface
     {
         $this->email = $email;
         return $this;
@@ -110,6 +120,7 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
     public function setSalt(?string $salt): self
     {
         $this->salt = $salt;
+
         return $this;
     }
 
@@ -118,19 +129,23 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
      */
     public function getRoles(): array
     {
-        return $this->roles;
+        $data = [];
+        /** @var SimpleUserRoleInterface $role */
+        foreach ($this->roles as $role) {
+            $data[] = strtoupper($role->getName());
+        }
+
+        return $data;
     }
 
     /**
-     * @param string $role
+     * @param SimpleUserRoleInterface $role
      * @return User
      */
-    public function addRole(string $role): self
+    public function addRole(SimpleUserRoleInterface $role): SimpleUserInterface
     {
-        $role = strtoupper($role);
-
-        if (!in_array($role, $this->roles, true)) {
-            $this->roles[] = $role;
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
         }
 
         return $this;
@@ -185,14 +200,11 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
+     * @param UserInterface $user
      * @return bool
      */
     public function isEqualTo(UserInterface $user)
     {
-        if ($this->id !== $user->getId()) {
-            return false;
-        }
-
         if ($this->email !== $user->getUsername()) {
             return false;
         }
