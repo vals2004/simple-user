@@ -4,17 +4,17 @@ services:
         autoconfigure: true
         public: false
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    SimpleUser\Controller\:
-        resource: './../../Controller'
-        tags: ['controller.service_arguments']
-
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     SimpleUser\:
         resource: './../../*'
         exclude: './../../{Model,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    SimpleUser\Controller\:
+        resource: './../../Controller'
+        tags: ['controller.service_arguments']
 
     simple_user.user_manager:
         class: SimpleUser\Service\UserManager
@@ -26,15 +26,15 @@ services:
         tags:
           - { name: doctrine.event_subscriber, connection: default }
 
-    simple_user.command.add_role:
-        class: SimpleUser\Command\AddRoleToUserCommand
+    SimpleUser\Command\AddRoleToUserCommand:
+        arguments: [null, '@simple_user.user_manager']
         tags:
             - { name: 'console.command' }
-    simple_user.command.remove_role:
-        class: SimpleUser\Command\RemoveRoleFromUserCommand
+    SimpleUser\Command\RemoveRoleFromUserCommand:
+        arguments: [null, '@simple_user.user_manager']
         tags:
             - { name: 'console.command' }
-    simple_user.command.create:
-        class: SimpleUser\Command\CreateUserCommand
+    SimpleUser\Command\CreateUserCommand:
+        arguments: [null, '@simple_user.user_manager']
         tags:
             - { name: 'console.command' }

@@ -78,6 +78,8 @@ class UserManager
         }
 
         $this->em->flush();
+
+        return true;
     }
 
     public function removeRolesFromUser(string $email, array $roles): bool
@@ -89,9 +91,11 @@ class UserManager
         }
         /** @var SimpleUserRoleInterface $role */
         foreach($user->getRoles() as $role) {
+            $roleEntity = $this->getRoleOrCreate($role);
+
             foreach ($roles as $key => $roleString) {
-                if ($role->getName() === trim($roleString)) {
-                    $user->removeRole($role);
+                if ($roleEntity->getName() === trim($roleString)) {
+                    $user->removeRole($roleEntity);
                     unset($roles[$key]);
                 }
             }

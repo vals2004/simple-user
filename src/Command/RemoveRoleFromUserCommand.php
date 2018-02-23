@@ -2,19 +2,25 @@
 
 namespace SimpleUser\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use SimpleUser\Service\UserManager;
 
 
-class RemoveRoleFromUserCommand extends ContainerAwareCommand
+class RemoveRoleFromUserCommand extends Command
 {
     /**
      * @var UserManager
      */
     protected $userManager;
+
+    public function __construct(?string $name = null, UserManager $userManager)
+    {
+        parent::__construct($name);
+        $this->userManager = $userManager;
+    }
 
     protected function configure()
     {
@@ -61,6 +67,6 @@ class RemoveRoleFromUserCommand extends ContainerAwareCommand
      */
     public function getUserManager(): UserManager
     {
-        return $this->getContainer()->get('simple_user.user_manager');
+        return $this->userManager;
     }
 }
