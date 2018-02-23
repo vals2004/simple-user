@@ -18,7 +18,7 @@ class RegistrationController extends Controller
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function registerAction(Request $request, EntityManagerInterface $entityManager)
+    public function register(Request $request, EntityManagerInterface $entityManager)
     {
         $form = $this->createForm(UserType::class);
         $form->handleRequest($request);

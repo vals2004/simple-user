@@ -4,6 +4,12 @@ services:
         autoconfigure: true
         public: false
 
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    SimpleUser\Controller\:
+        resource: './../../Controller'
+        tags: ['controller.service_arguments']
+
     simple_user.user_manager:
         class: SimpleUser\Service\UserManager
         arguments: ['@doctrine.orm.entity_manager','%simple_user.user_class%', '%simple_user.role_class%']
