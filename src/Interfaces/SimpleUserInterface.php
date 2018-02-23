@@ -14,6 +14,12 @@ interface SimpleUserInterface extends UserInterface, \Serializable, EquatableInt
     public function addRole(SimpleUserRoleInterface $role): self;
 
     /**
+     * @param SimpleUserRoleInterface $role
+     * @return SimpleUserInterface
+     */
+    public function removeRole(SimpleUserRoleInterface $role): self;
+
+    /**
      * @return null|string
      */
     public function getEmail(): ?string;

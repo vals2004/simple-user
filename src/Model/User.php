@@ -47,9 +47,9 @@ abstract class User implements SimpleUserInterface
     protected $salt;
 
     /**
-     * @var SimpleUserRoleInterface[]
+     * @var ArrayCollection
      */
-    protected $role;
+    protected $roles;
 
     /**
      * @return int|null
@@ -136,6 +136,19 @@ abstract class User implements SimpleUserInterface
     {
         if (!$this->roles->contains($role)) {
             $this->roles->add($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param SimpleUserRoleInterface $role
+     * @return SimpleUserInterface
+     */
+    public function removeRole(SimpleUserRoleInterface $role): SimpleUserInterface
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

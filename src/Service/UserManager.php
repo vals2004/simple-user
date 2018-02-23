@@ -4,6 +4,8 @@ namespace SimpleUser\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleUser\Helpers\SaltHelper;
+use SimpleUser\Interfaces\SimpleUserInterface;
+use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use SimpleUser\Model\User;
 
 class UserManager
@@ -48,13 +50,76 @@ class UserManager
         $user->setPassword($password);
         $user->setSalt(SaltHelper::createSalt($email));
         foreach ($roles as $role) {
-            $role = $this->em->getRepository($this->simpleUserRoleClass)->findOneBy(['name' => $role]);
-            if ($role) {
-                $user->addRole($role);
+            $roleEntity = $this->getRoleOrCreate($role);
+            if ($roleEntity) {
+                $user->addRole($roleEntity);
             }
         }
 
         $this->em->persist($user);
         $this->em->flush();
+    }
+
+    /**
+     * @param string $email
+     * @param array $roles
+     * @return bool
+     */
+    public function addRolesToUser(string $email, array $roles): bool
+    {
+        /** @var SimpleUserInterface $user */
+        $user = $this->em->getRepository($this->simpleUserClass)->findOneBy(['email' => $email]);
+        if (!$user) {
+            return false;
+        }
+        foreach ($roles as $role) {
+            $roleClass = $this->getRoleOrCreate($role);
+            $user->addRole($roleClass);
+        }
+
+        $this->em->flush();
+    }
+
+    public function removeRolesFromUser(string $email, array $roles): bool
+    {
+        /** @var SimpleUserInterface $user */
+        $user = $this->em->getRepository($this->simpleUserClass)->findOneBy(['email' => $email]);
+        if (!$user) {
+            return false;
+        }
+        /** @var SimpleUserRoleInterface $role */
+        foreach($user->getRoles() as $role) {
+            foreach ($roles as $key => $roleString) {
+                if ($role->getName() === trim($roleString)) {
+                    $user->removeRole($role);
+                    unset($roles[$key]);
+                }
+            }
+        }
+
+        $this->em->flush();
+
+        return true;
+    }
+
+    /**
+     * @param string $roleName
+     * @return SimpleUserRoleInterface
+     */
+    protected function getRoleOrCreate(string $roleName): SimpleUserRoleInterface
+    {
+        $role = $this->em->getRepository($this->simpleUserRoleClass)->findOneBy(['name' => $roleName]);
+        if ($role) {
+            return $role;
+        }
+        /** @var SimpleUserRoleInterface $role */
+        $role = new $this->simpleUserRoleClass();
+        $role->setName($roleName);
+        $role->setDescription('Auto generated role.');
+
+        $this->em->persist($role);
+        $this->em->flush();
+
+        return $role;
     }
 }
