@@ -2,13 +2,15 @@
     {{ form_start(form, { 'action': path('simple_user_registration'), 'method': 'post'}) }}
     <h1>{{ 'Registration'|trans() }}</h1>
     <div class="form-group">
-        {{ form_label(form._username) }}
-        {{ form_widget(form._username, { 'attr': { 'class': 'form-control' } }) }}
+        {{ form_errors(form.email) }}
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email, { 'attr': { 'class': 'form-control' } }) }}
     </div>
 
     <div class="form-group">
-        {{ form_label(form._password) }}
-        {{ form_widget(form._password, { 'attr': { 'class': 'form-control' } }) }}
+        {{ form_errors(form.password) }}
+        {{ form_label(form.password) }}
+        {{ form_widget(form.password, { 'attr': { 'class': 'form-control' } }) }}
     </div>
 
     <div class="auth-btn-section">

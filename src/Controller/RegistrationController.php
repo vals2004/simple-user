@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SimpleUser\Interfaces\SimpleUserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class RegistrationController extends Controller
 {
@@ -20,15 +21,14 @@ class RegistrationController extends Controller
      */
     public function register(Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(UserType::class);
+        $userClass = $this->getParameter('simple_user.user_class');
+        /** @var SimpleUserInterface $user */
+        $user = new $userClass();
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userClass = $this->getParameter('simple_user.user_class');
-            /** @var SimpleUserInterface $user */
-            $user = new $userClass();
-            $user->setPassword($form->get('_password')->getData());
-            $user->setEmail($form->get('_username')->getData());
+            $user = $form->getData();
             /** @var SimpleUserRoleInterface $role */
             $role = $entityManager->getRepository($this->getParameter('simple_user.role_class'))
                 ->findOneBy(
@@ -39,6 +39,23 @@ class RegistrationController extends Controller
             }
             $entityManager->persist($user);
             $entityManager->flush();
+
+            $token = new UsernamePasswordToken(
+                $user,
+                null,
+                $this->getParameter('simple_user.firewall_name'),
+                $user->getRoles()
+            );
+            $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set(
+                '_security_' . $this->getParameter('simple_user.firewall_name'), serialize($token)
+            );
+
+            return $this->redirect($request->getSession()
+                ->get(
+                    sprintf('_security.%s.target_path', $this->getParameter('simple_user.firewall_name'))
+                )
+            );
         }
 
         return $this->render('@SimpleUser/Registration/index.html.twig',[

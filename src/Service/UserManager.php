@@ -3,7 +3,7 @@
 namespace SimpleUser\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use SimpleUser\Helpers\SaltHelper;
+use SimpleUser\Helpers\HashHelper;
 use SimpleUser\Interfaces\SimpleUserInterface;
 use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use SimpleUser\Model\User;
@@ -48,7 +48,7 @@ class UserManager
         $user = new $this->simpleUserClass();
         $user->setEmail($email);
         $user->setPassword($password);
-        $user->setSalt(SaltHelper::createSalt($email));
+        $user->setSalt(HashHelper::createSalt($email));
         foreach ($roles as $role) {
             $roleEntity = $this->getRoleOrCreate($role);
             if ($roleEntity) {

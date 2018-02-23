@@ -4,7 +4,8 @@ namespace SimpleUser\Events;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use SimpleUser\Helpers\SaltHelper;
+use SimpleUser\Helpers\HashHelper;
+use SimpleUser\Interfaces\SimpleUserInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
@@ -42,7 +43,7 @@ class UserPasswordSubscriber implements EventSubscriber
     public function preUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if (!$entity instanceof UserInterface) {
+        if (!$entity instanceof SimpleUserInterface) {
             return;
         }
 
@@ -66,10 +67,10 @@ class UserPasswordSubscriber implements EventSubscriber
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if (!$entity instanceof UserInterface) {
+        if (!$entity instanceof SimpleUserInterface) {
             return;
         }
-
+        $entity->setConfirmHash(HashHelper::createConfirmationHash());
         $this->encodePassword($entity);
     }
 
@@ -85,7 +86,7 @@ class UserPasswordSubscriber implements EventSubscriber
         $salt = $user->getSalt();
 
         if (empty($salt)) {
-            $salt = SaltHelper::createSalt($user->getEmail());
+            $salt = HashHelper::createSalt($user->getEmail());
             $user->setSalt($salt);
         }
 

@@ -26,6 +26,10 @@ services:
         tags:
           - { name: doctrine.event_subscriber, connection: default }
 
+    SimpleUser\Form\UserType:
+        arguments: ['%simple_user.user_class%']
+        tags: [form.type]
+
     SimpleUser\Command\AddRoleToUserCommand:
         arguments: [null, '@simple_user.user_manager']
         tags:

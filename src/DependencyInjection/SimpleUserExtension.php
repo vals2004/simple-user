@@ -20,6 +20,8 @@ class SimpleUserExtension extends Extension
         $container->setParameter('simple_user.user_class', $config['user_class']);
         $container->setParameter('simple_user.role_class', $config['role_class']);
 
+        $container->setParameter('simple_user.firewall_name', $config['firewall_name']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
     }

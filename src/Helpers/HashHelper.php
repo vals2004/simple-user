@@ -3,7 +3,7 @@
 namespace SimpleUser\Helpers;
 
 
-class SaltHelper
+class HashHelper
 {
     /**
      * @param $email
@@ -12,5 +12,13 @@ class SaltHelper
     public static function createSalt(string $email): string
     {
         return hash('sha256', $email . uniqid(), false);
+    }
+
+    /**
+     * @return string
+     */
+    public static function createConfirmationHash(): string
+    {
+        return hash('sha256', uniqid(), false);
     }
 }

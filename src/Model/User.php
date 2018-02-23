@@ -47,6 +47,13 @@ abstract class User implements SimpleUserInterface
     protected $salt;
 
     /**
+     * @ORM\Column(type="string", name="confirm_hash",length=255, nullable=false)
+     *
+     * @var string|null
+     */
+    protected $confirmHash;
+
+    /**
      * @var ArrayCollection
      */
     protected $roles;
@@ -124,7 +131,6 @@ abstract class User implements SimpleUserInterface
         foreach ($this->roles as $role) {
             $data[] = strtoupper($role->getName());
         }
-
         return $data;
     }
 
@@ -213,5 +219,24 @@ abstract class User implements SimpleUserInterface
         }
 
         return true;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getConfirmHash(): ?string
+    {
+        return $this->confirmHash;
+    }
+
+    /**
+     * @param null|string $confirmHash
+     * @return SimpleUserInterface
+     */
+    public function setConfirmHash(?string $confirmHash): SimpleUserInterface
+    {
+        $this->confirmHash = $confirmHash;
+        
+        return $this;
     }
 }
