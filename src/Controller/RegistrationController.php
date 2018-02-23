@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SimpleUser\Form\UserType;
 use SimpleUser\Helpers\UserRoleHelper;
 use SimpleUser\Interfaces\SimpleUserRoleInterface;
+use SimpleUser\Service\MailerBuilderService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class RegistrationController extends Controller
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function register(Request $request, EntityManagerInterface $entityManager)
+    public function index(Request $request, EntityManagerInterface $entityManager, MailerBuilderService $mailerBuilder)
     {
         $userClass = $this->getParameter('simple_user.user_class');
         /** @var SimpleUserInterface $user */
@@ -51,6 +52,13 @@ class RegistrationController extends Controller
                 '_security_' . $this->getParameter('simple_user.firewall_name'), serialize($token)
             );
 
+            $mailerBuilder->setTemplate('@SimpleUser/Email/registration.html.twig', ['user' => $user])
+                ->setSubject('Registration complete')
+                ->setEmailTo([$user->getEmail()])
+                ->setEmailFrom($this->getParameter('simple_user.email_from'))
+                ->send();
+
+
             return $this->redirect($request->getSession()
                 ->get(
                     sprintf('_security.%s.target_path', $this->getParameter('simple_user.firewall_name'))
@@ -61,5 +69,39 @@ class RegistrationController extends Controller
         return $this->render('@SimpleUser/Registration/index.html.twig',[
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param string $confirmHash
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function complete(string $confirmHash, EntityManagerInterface $em, Request $request)
+    {
+        /** @var SimpleUserInterface $user */
+        $user = $em->getRepository($this->getParameter('simple_user.user_class'))
+            ->findOneBy(['confirmHash' => $confirmHash]);
+
+        if ($user) {
+            $token = new UsernamePasswordToken(
+                $user,
+                null,
+                $this->getParameter('simple_user.firewall_name'),
+                $user->getRoles()
+            );
+            $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set(
+                '_security_' . $this->getParameter('simple_user.firewall_name'), serialize($token)
+            );
+
+            return $this->redirect($request->getSession()
+                ->get(
+                    sprintf('_security.%s.target_path', $this->getParameter('simple_user.firewall_name'))
+                )
+            );
+        }
+
+        $this->redirect('/');
     }
 }

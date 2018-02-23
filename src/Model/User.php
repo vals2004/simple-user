@@ -47,7 +47,7 @@ abstract class User implements SimpleUserInterface
     protected $salt;
 
     /**
-     * @ORM\Column(type="string", name="confirm_hash",length=255, nullable=false)
+     * @ORM\Column(type="string", name="confirm_hash",length=255, nullable=true)
      *
      * @var string|null
      */
@@ -236,7 +236,7 @@ abstract class User implements SimpleUserInterface
     public function setConfirmHash(?string $confirmHash): SimpleUserInterface
     {
         $this->confirmHash = $confirmHash;
-        
+
         return $this;
     }
 }

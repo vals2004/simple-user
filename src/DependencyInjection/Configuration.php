@@ -27,6 +27,11 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('firewall_name')
                     ->isRequired()
                 ->end()
+                ->arrayNode('email')
+                    ->children()
+                        ->scalarNode('from')->isRequired()
+                    ->end()
+                ->end()
             ->end()
         ;
 
