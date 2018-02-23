@@ -46,20 +46,10 @@ abstract class User implements SimpleUserInterface
      */
     protected $salt;
 
-   /**
-    * @ORM\ManyToMany(targetEntity="Phonenumber")
-    * @ORM\JoinTable(name="simple_user_to_role",
-    *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-    *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", unique=true)}
-    * )
-    * @var
-    */
-    private $roles;
-
-    public function __construct() {
-        $this->roles = new ArrayCollection();
-    }
-
+    /**
+     * @var SimpleUserRoleInterface[]
+     */
+    protected $role;
 
     /**
      * @return int|null
