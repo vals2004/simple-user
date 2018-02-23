@@ -19,6 +19,21 @@ services:
         arguments: ['@security.encoder_factory']
         tags:
           - { name: doctrine.event_subscriber, connection: default }
+
+    SimpleUser\Command\AddRoleToUserCommand:
+        calls:
+          - method: setUserManager
+            arguments:
+              - '@simple_user.user_manager'
+        tags:
+            - { name: 'console.command', command: 'simple-user:add-role' }
+    SimpleUser\Command\RemoveRoleFromUserCommand:
+        calls:
+          - method: setUserManager
+            arguments:
+              - '@simple_user.user_manager'
+        tags:
+            - { name: 'console.command', command: 'simple-user:remove-role' }
     SimpleUser\Command\CreateUserCommand:
         calls:
           - method: setUserManager

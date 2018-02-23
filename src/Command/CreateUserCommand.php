@@ -19,7 +19,7 @@ class CreateUserCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:create-user')
+            ->setName('simple-user:create')
             ->addArgument('email', InputArgument::REQUIRED, 'The username of the user.')
             ->addArgument('password', InputArgument::REQUIRED, 'The password of the user.')
             ->addArgument(

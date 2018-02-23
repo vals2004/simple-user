@@ -19,7 +19,7 @@ class AddRoleToUserCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:user-add-role')
+            ->setName('simple-user:add-role')
             ->addArgument('email', InputArgument::REQUIRED, 'The username of the user.')
             ->addArgument(
                 'roles',

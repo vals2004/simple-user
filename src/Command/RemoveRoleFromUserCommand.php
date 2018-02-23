@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use SimpleUser\Service\UserManager;
 
 
-class AddRoleToUserCommand extends Command
+class RemoveRoleFromUserCommand extends Command
 {
     /**
      * @var UserManager
@@ -19,7 +19,7 @@ class AddRoleToUserCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:user-remove-role')
+            ->setName('simple-user:remove-role')
             ->addArgument('email', InputArgument::REQUIRED, 'The username of the user.')
             ->addArgument(
                 'roles',
