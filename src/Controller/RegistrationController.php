@@ -12,9 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SimpleUser\Interfaces\SimpleUserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegistrationController extends Controller
 {
@@ -22,14 +19,12 @@ class RegistrationController extends Controller
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param MailerBuilderService $mailerBuilder
-     * @param EventDispatcherInterface $dispatcher
      * @return Response
      */
     public function index(
         Request $request,
         EntityManagerInterface $entityManager,
-        MailerBuilderService $mailerBuilder,
-        EventDispatcherInterface $dispatcher
+        MailerBuilderService $mailerBuilder
     ) {
         $userClass = $this->getParameter('simple_user.user_class');
         /** @var SimpleUserInterface $user */
@@ -39,6 +34,7 @@ class RegistrationController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+
             /** @var SimpleUserRoleInterface $role */
             $role = $entityManager->getRepository($this->getParameter('simple_user.role_class'))
                 ->findOneBy(
@@ -47,8 +43,15 @@ class RegistrationController extends Controller
             if ($role) {
                 $user->addRole($role);
             }
+
             $entityManager->persist($user);
             $entityManager->flush();
+
+            $mailerBuilder->setTemplate('@SimpleUser/Email/registration.html.twig', ['user' => $user])
+                ->setSubject('Registration complete')
+                ->setEmailTo([$user->getEmail()])
+                ->setEmailFrom($this->getParameter('simple_user.email_from'))
+                ->send();
 
             $token = new UsernamePasswordToken(
                 $user,
@@ -56,13 +59,12 @@ class RegistrationController extends Controller
                 $this->getParameter('simple_user.firewall_name'),
                 $user->getRoles()
             );
-            $this->get('security.token_storage')->setToken($token);
 
-            $mailerBuilder->setTemplate('@SimpleUser/Email/registration.html.twig', ['user' => $user])
-                ->setSubject('Registration complete')
-                ->setEmailTo([$user->getEmail()])
-                ->setEmailFrom($this->getParameter('simple_user.email_from'))
-                ->send();
+            $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set(
+                '_security_' . $this->getParameter('simple_user.firewall_name'),
+                serialize($token)
+            );
 
             return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
@@ -75,15 +77,11 @@ class RegistrationController extends Controller
     /**
      * @param string $confirmHash
      * @param EntityManagerInterface $em
-     * @param Request $request
-     * @param EventDispatcherInterface $dispatcher
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function complete(
         string $confirmHash,
-        EntityManagerInterface $em,
-        Request $request,
-        EventDispatcherInterface $dispatcher
+        EntityManagerInterface $em
     ) {
         /** @var SimpleUserInterface $user */
         $user = $em->getRepository($this->getParameter('simple_user.user_class'))
@@ -91,6 +89,7 @@ class RegistrationController extends Controller
 
         if ($user) {
             $user->setConfirmHash(null);
+            $user->setEnabled(true);
             $em->flush();
             $token = new UsernamePasswordToken(
                 $user,
@@ -99,6 +98,10 @@ class RegistrationController extends Controller
                 $user->getRoles()
             );
             $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set(
+                '_security_' . $this->getParameter('simple_user.firewall_name'),
+                serialize($token)
+            );
 
             return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }

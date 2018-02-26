@@ -54,9 +54,22 @@ abstract class User implements SimpleUserInterface
     protected $confirmHash;
 
     /**
+     * @ORM\Column(type="string", name="password_reset_hash",length=255, nullable=true)
+     *
+     * @var string|null
+     */
+    protected $passwordResetHash;
+
+    /**
      * @var ArrayCollection
      */
     protected $roles;
+
+    /**
+     * @ORM\Column(type="boolean", name="is_enabled", nullable=false, options={"default" : 0})
+     * @var bool
+     */
+    protected $isEnabled = false;
 
     /**
      * @return int|null
@@ -236,6 +249,68 @@ abstract class User implements SimpleUserInterface
     public function setConfirmHash(?string $confirmHash): SimpleUserInterface
     {
         $this->confirmHash = $confirmHash;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    /**
+     * @return false
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->isEnabled;
+    }
+
+    /**
+     * @param bool $isEnabled
+     * @return SimpleUserInterface
+     */
+    public function setEnabled(bool $isEnabled): SimpleUserInterface
+    {
+        $this->isEnabled = $isEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPasswordResetHash(): ?string
+    {
+        return $this->passwordResetHash;
+    }
+
+    /**
+     * @param null|string $passwordResetHash
+     * @return SimpleUserInterface
+     */
+    public function setPasswordResetHash(?string $passwordResetHash): SimpleUserInterface
+    {
+        $this->passwordResetHash = $passwordResetHash;
 
         return $this;
     }

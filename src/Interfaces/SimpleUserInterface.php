@@ -2,10 +2,10 @@
 
 namespace SimpleUser\Interfaces;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 
-interface SimpleUserInterface extends UserInterface, \Serializable, EquatableInterface
+interface SimpleUserInterface extends AdvancedUserInterface, \Serializable, EquatableInterface
 {
     /**
      * @param SimpleUserRoleInterface $role
@@ -47,4 +47,21 @@ interface SimpleUserInterface extends UserInterface, \Serializable, EquatableInt
      * @return SimpleUserInterface
      */
     public function setConfirmHash(?string $hash): self;
+
+    /**
+     * @param bool $isEnabled
+     * @return SimpleUserInterface
+     */
+    public function setEnabled(bool $isEnabled): self;
+
+    /**
+     * @return null|string
+     */
+    public function getPasswordResetHash(): ?string;
+
+    /**
+     * @param null|string $passwordResetHash
+     * @return SimpleUserInterface
+     */
+    public function setPasswordResetHash(?string $passwordResetHash): self;
 }

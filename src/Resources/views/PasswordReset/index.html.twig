@@ -1,0 +1,7 @@
+{% extends '@SimpleUser/base.html.twig' %}
+
+{% block title %}{{ 'Password reset'|trans() }}{% endblock%}
+
+{% block body %}
+    {% include '@SimpleUser/PasswordReset/_form.html.twig' with {'form': form } %}
+{% endblock  %}
