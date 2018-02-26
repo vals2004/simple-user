@@ -64,10 +64,6 @@ class RegistrationController extends Controller
                 ->setEmailFrom($this->getParameter('simple_user.email_from'))
                 ->send();
 
-
-            $loginEvent = new InteractiveLoginEvent($request, $token);
-            $dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
-
             return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
 
