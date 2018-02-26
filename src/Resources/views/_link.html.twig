@@ -1,0 +1,15 @@
+{% if isAllowRegistration is defined and isAllowRegistration %}
+    <div>
+        <a href="{{ path('simple_user_registration') }}">{{ 'Registration'|trans() }}</a>
+    </div>
+{% endif %}
+{% if isAllowLogin is defined and isAllowLogin %}
+    <div>
+        <a href="{{ path('simple_user_login') }}">{{ 'Login'|trans() }}</a>
+    </div>
+{% endif %}
+{% if isAllowForgotPassword is defined and isAllowForgotPassword %}
+    <div>
+        <a href="{{ path('simple_user_forgot_password') }}">{{ 'Forgot Password'|trans() }}</a>
+    </div>
+{% endif %}

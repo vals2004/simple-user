@@ -2,18 +2,16 @@
 
 namespace SimpleUser\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
+use SimpleUser\Traits\RouterTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use SimpleUser\Form\LoginType;
 
 class SecurityController extends Controller
 {
+    use RouterTrait;
+
     /**
      * @param Request $request
      */
@@ -28,6 +26,8 @@ class SecurityController extends Controller
         return $this->render('@SimpleUser/Security/login.html.twig',[
             'error' => $error,
             'form' => $form->createView(),
+            'isAllowRegistration' => $this->routeExists('simple_user_registration'),
+            'isAllowForgotPassword' => $this->routeExists('simple_user_forgot_password')
         ]);
 
     }
@@ -38,5 +38,4 @@ class SecurityController extends Controller
     public function logout()
     {
     }
-
 }

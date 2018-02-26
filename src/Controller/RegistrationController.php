@@ -7,6 +7,7 @@ use SimpleUser\Form\UserType;
 use SimpleUser\Helpers\UserRoleHelper;
 use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use SimpleUser\Service\MailerBuilderService;
+use SimpleUser\Traits\RouterTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class RegistrationController extends Controller
 {
+    use RouterTrait;
+
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -71,6 +74,8 @@ class RegistrationController extends Controller
 
         return $this->render('@SimpleUser/Registration/index.html.twig',[
             'form' => $form->createView(),
+            'isAllowForgotPassword' => $this->routeExists('simple_user_forgot_password'),
+            'isAllowLogin' => $this->routeExists('simple_user_login')
         ]);
     }
 

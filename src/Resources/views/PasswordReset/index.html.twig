@@ -3,5 +3,5 @@
 {% block title %}{{ 'Password reset'|trans() }}{% endblock%}
 
 {% block body %}
-    {% include '@SimpleUser/PasswordReset/_form.html.twig' with {'form': form } %}
+    {% include '@SimpleUser/PasswordReset/_form.html.twig' with {'form': form, 'user': user } %}
 {% endblock  %}

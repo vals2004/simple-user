@@ -4,4 +4,8 @@
 
 {% block body %}
     {% include '@SimpleUser/Registration/_form.html.twig' with {'form': form } %}
+    {% include '@SimpleUser/_link.html.twig' with {
+        'isAllowForgotPassword': isAllowForgotPassword,
+        'isAllowLogin': isAllowLogin
+    } %}
 {% endblock  %}
