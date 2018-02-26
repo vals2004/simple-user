@@ -55,7 +55,7 @@ class UserManager
                 $user->addRole($roleEntity);
             }
         }
-
+        $user->setEnabled(true);
         $this->em->persist($user);
         $this->em->flush();
     }
