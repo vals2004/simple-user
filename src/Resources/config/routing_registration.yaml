@@ -1,0 +1,7 @@
+simple_user_registration:
+    path: /registration
+    controller: SimpleUser\Controller\RegistrationController::index
+
+simple_user_registration_complete:
+    path: /registration/complete/{confirmHash}
+    controller: SimpleUser\Controller\RegistrationController::complete

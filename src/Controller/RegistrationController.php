@@ -80,10 +80,15 @@ class RegistrationController extends Controller
      * @param string $confirmHash
      * @param EntityManagerInterface $em
      * @param Request $request
+     * @param EventDispatcherInterface $dispatcher
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function complete(string $confirmHash, EntityManagerInterface $em, Request $request)
-    {
+    public function complete(
+        string $confirmHash,
+        EntityManagerInterface $em,
+        Request $request,
+        EventDispatcherInterface $dispatcher
+    ) {
         /** @var SimpleUserInterface $user */
         $user = $em->getRepository($this->getParameter('simple_user.user_class'))
             ->findOneBy(['confirmHash' => $confirmHash]);
@@ -96,17 +101,12 @@ class RegistrationController extends Controller
                 $user->getRoles()
             );
             $this->get('security.token_storage')->setToken($token);
-            $this->get('session')->set(
-                '_security_' . $this->getParameter('simple_user.firewall_name'), serialize($token)
-            );
+            $loginEvent = new InteractiveLoginEvent($request, $token);
+            $dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
 
-            return $this->redirect($request->getSession()
-                ->get(
-                    sprintf('_security.%s.target_path', $this->getParameter('simple_user.firewall_name'))
-                )
-            );
+            return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
 
-        $this->redirect('/');
+        $this->redirectToRoute('simple_user_login');
     }
 }
