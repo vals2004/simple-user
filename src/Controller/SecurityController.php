@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use SimpleUser\Form\UserType;
+use SimpleUser\Form\LoginType;
 
 class SecurityController extends Controller
 {
@@ -23,7 +23,7 @@ class SecurityController extends Controller
         $lastUsername = $session->get(Security::LAST_USERNAME) ?? '';
         $error = $session->get(Security::AUTHENTICATION_ERROR);
         $session->remove(Security::AUTHENTICATION_ERROR);
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(LoginType::class);
 
         return $this->render('@SimpleUser/Security/login.html.twig',[
             'error' => $error,

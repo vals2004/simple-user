@@ -41,4 +41,10 @@ interface SimpleUserInterface extends UserInterface, \Serializable, EquatableInt
      * @return SimpleUserInterface
      */
     public function setSalt(?string $salt): self;
+
+    /**
+     * @param null|string $hash
+     * @return SimpleUserInterface
+     */
+    public function setConfirmHash(?string $hash): self;
 }

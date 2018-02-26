@@ -24,6 +24,17 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('role_class')
                     ->isRequired()
                 ->end()
+                ->scalarNode('redirect_after_login')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('firewall_name')
+                    ->isRequired()
+                ->end()
+                ->arrayNode('email')
+                    ->children()
+                        ->scalarNode('from')->isRequired()
+                    ->end()
+                ->end()
             ->end()
         ;
 

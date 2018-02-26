@@ -3,7 +3,7 @@
 namespace SimpleUser\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use SimpleUser\Helpers\SaltHelper;
+use SimpleUser\Helpers\HashHelper;
 use SimpleUser\Interfaces\SimpleUserInterface;
 use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use SimpleUser\Model\User;
@@ -48,7 +48,7 @@ class UserManager
         $user = new $this->simpleUserClass();
         $user->setEmail($email);
         $user->setPassword($password);
-        $user->setSalt(SaltHelper::createSalt($email));
+        $user->setSalt(HashHelper::createSalt($email));
         foreach ($roles as $role) {
             $roleEntity = $this->getRoleOrCreate($role);
             if ($roleEntity) {
@@ -78,6 +78,8 @@ class UserManager
         }
 
         $this->em->flush();
+
+        return true;
     }
 
     public function removeRolesFromUser(string $email, array $roles): bool
@@ -89,9 +91,11 @@ class UserManager
         }
         /** @var SimpleUserRoleInterface $role */
         foreach($user->getRoles() as $role) {
+            $roleEntity = $this->getRoleOrCreate($role);
+
             foreach ($roles as $key => $roleString) {
-                if ($role->getName() === trim($roleString)) {
-                    $user->removeRole($role);
+                if ($roleEntity->getName() === trim($roleString)) {
+                    $user->removeRole($roleEntity);
                     unset($roles[$key]);
                 }
             }
