@@ -90,6 +90,8 @@ class RegistrationController extends Controller
             ->findOneBy(['confirmHash' => $confirmHash]);
 
         if ($user) {
+            $user->setConfirmHash(null);
+            $em->flush();
             $token = new UsernamePasswordToken(
                 $user,
                 null,
@@ -97,8 +99,6 @@ class RegistrationController extends Controller
                 $user->getRoles()
             );
             $this->get('security.token_storage')->setToken($token);
-            $loginEvent = new InteractiveLoginEvent($request, $token);
-            $dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
 
             return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
