@@ -28,6 +28,10 @@ services:
         tags:
           - { name: doctrine.event_subscriber, connection: default }
 
+    SimpleUser\Form\PasswordResetType:
+        arguments: ['%simple_user.user_class%']
+        tags: [form.type]
+
     SimpleUser\Form\UserType:
         arguments: ['%simple_user.user_class%']
         tags: [form.type]

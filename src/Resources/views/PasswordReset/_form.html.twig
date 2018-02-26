@@ -1,14 +1,19 @@
 <div class="form-wrapper">
-    {{ form_start(form, { 'action': path('simple_user_registration'), 'method': 'post'}) }}
+    {{ form_start(form, { 'action': path('simple_user_password_reset'), 'method': 'post'}) }}
     <h1>{{ 'Password reset'|trans() }}</h1>
     <div class="form-group">
-        {{ form_errors(form.password) }}
-        {{ form_label(form.password) }}
-        {{ form_widget(form.password, { 'attr': { 'class': 'form-control' } }) }}
+        {{ form_errors(form.password.first) }}
+        {{ form_label(form.password.first) }}
+        {{ form_widget(form.password.first, { 'attr': { 'class': 'form-control' } }) }}
+    </div>
+    <div class="form-group">
+        {{ form_errors(form.password.second) }}
+        {{ form_label(form.password.second) }}
+        {{ form_widget(form.password.second, { 'attr': { 'class': 'form-control' } }) }}
     </div>
 
     <div class="auth-btn-section">
-        {{ form_widget(form.submit, { 'attr': { 'class': 'form-control btn-default' }, 'label': 'Registration' }) }}
+        {{ form_widget(form.submit, { 'attr': { 'class': 'form-control btn-default' }, 'label': 'Reset' }) }}
     </div>
     {{ form_end(form) }}
 </div>
