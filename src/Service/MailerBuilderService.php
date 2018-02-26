@@ -121,7 +121,6 @@ class MailerBuilderService
                 'text/html'
             );
         } catch (\Twig_Error $e) {
-            var_dump($e);exit;
             $this->logger->emergency('Got error when build email message: ' . $e->getMessage());
         }
 

@@ -120,6 +120,6 @@ abstract class Role implements SimpleUserRoleInterface
      */
     public function __toString(): string
     {
-        return (string) $this->getName();
+        return (string) $this->getDescription();
     }
 }
