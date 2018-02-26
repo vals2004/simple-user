@@ -142,9 +142,17 @@ abstract class User implements SimpleUserInterface
         $data = [];
         /** @var SimpleUserRoleInterface $role */
         foreach ($this->roles as $role) {
-            $data[] = strtoupper($role->getName());
+            $data[$role->getId()] = strtoupper($role->getName());
         }
         return $data;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRolesCollection()
+    {
+        return $this->roles;
     }
 
     /**
@@ -155,6 +163,7 @@ abstract class User implements SimpleUserInterface
     {
         if (!$this->roles->contains($role)) {
             $this->roles->add($role);
+            $role->addUser($this);
         }
 
         return $this;
@@ -164,10 +173,20 @@ abstract class User implements SimpleUserInterface
      * @param SimpleUserRoleInterface $role
      * @return SimpleUserInterface
      */
-    public function removeRole(SimpleUserRoleInterface $role): SimpleUserInterface
+    public function removeRole($role): SimpleUserInterface
     {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
+        if ($role instanceof SimpleUserRoleInterface) {
+            if ($this->roles->contains($role)) {
+                $this->roles->removeElement($role);
+                $role->removeUser($this);
+            }
+        } else {
+            foreach ($this->roles as $roleDb) {
+                if ($roleDb->getName() === $role) {
+                    $this->removeRole($roleDb);
+                    break;
+                }
+            }
         }
 
         return $this;

@@ -72,6 +72,7 @@ namespace App\Entity;
 
 use SimpleUser\Model\Role as BaseRole;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -79,8 +80,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Role extends BaseRole
 {
-}
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="roles", cascade={"persist","remove"})
+     *
+     * @var ArrayCollection
+     */
+    protected $users;
 
+    public function __construct() {
+        $this->users = new ArrayCollection();
+    }
+}
 ```
 
 ```
@@ -100,8 +110,8 @@ use Doctrine\ORM\Mapping as ORM;
 class User extends BaseUser
 {
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
-     * @ORM\JoinTable(name="user_to_role",
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="users", cascade={"persist","remove"})
+     * @ORM\JoinTable(name="simple_user_to_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
      * )

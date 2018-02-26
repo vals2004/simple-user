@@ -14,10 +14,10 @@ interface SimpleUserInterface extends AdvancedUserInterface, \Serializable, Equa
     public function addRole(SimpleUserRoleInterface $role): self;
 
     /**
-     * @param SimpleUserRoleInterface $role
+     * @param mixed $role
      * @return SimpleUserInterface
      */
-    public function removeRole(SimpleUserRoleInterface $role): self;
+    public function removeRole($role): self;
 
     /**
      * @return null|string

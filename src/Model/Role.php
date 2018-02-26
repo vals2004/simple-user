@@ -2,9 +2,11 @@
 
 namespace SimpleUser\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use SimpleUser\Interfaces\SimpleUserInterface;
 
 /**
  * @ORM\MappedSuperclass
@@ -33,6 +35,11 @@ abstract class Role implements SimpleUserRoleInterface
      * @var string|null
      */
     protected $description;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $users;
 
     /**
      * @return int|null
@@ -78,5 +85,41 @@ abstract class Role implements SimpleUserRoleInterface
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * @param SimpleUserInterface $user
+     * @return SimpleUserRoleInterface
+     */
+    public function addUser(SimpleUserInterface $user): SimpleUserRoleInterface
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param SimpleUserInterface $user
+     * @return SimpleUserRoleInterface
+     */
+    public function removeUser(SimpleUserInterface $user): SimpleUserRoleInterface
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string) $this->getName();
     }
 }

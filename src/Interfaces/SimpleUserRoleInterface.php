@@ -15,6 +15,7 @@ interface SimpleUserRoleInterface
      * @return SimpleUserRoleInterface
      */
     public function setName(?string $name): SimpleUserRoleInterface;
+
     /**
      * @return null|string
      */
@@ -25,4 +26,16 @@ interface SimpleUserRoleInterface
      * @return SimpleUserRoleInterface
      */
     public function setDescription(?string $description): SimpleUserRoleInterface;
+
+    /**
+     * @param SimpleUserInterface $user
+     * @return SimpleUserRoleInterface
+     */
+    public function addUser(SimpleUserInterface $user): SimpleUserRoleInterface;
+
+    /**
+     * @param SimpleUserInterface $user
+     * @return SimpleUserRoleInterface
+     */
+    public function removeUser(SimpleUserInterface $user): SimpleUserRoleInterface;
 }
