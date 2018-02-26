@@ -32,8 +32,8 @@ class AddRoleToUserCommand extends Command
                 InputArgument::OPTIONAL,
                 'The roles of the user. Split by comma: ROLE_USER, ROLE_SONATA_ADMIN'
             )
-            ->setDescription('Create a new user.')
-            ->setHelp('This command allows you to create a user')
+            ->setDescription('Add role to exist user.')
+            ->setHelp('This command allows you to add role to user.')
         ;
     }
 
