@@ -103,6 +103,6 @@ class RegistrationController extends Controller
             return $this->redirectToRoute($this->getParameter('simple_user.redirect_after_login'));
         }
 
-        $this->redirectToRoute('simple_user_login');
+        return $this->redirectToRoute('simple_user_login');
     }
 }
