@@ -48,3 +48,7 @@ services:
         arguments: [null, '@simple_user.user_manager']
         tags:
             - { name: 'console.command' }
+    SimpleUser\Command\CreateRoleCommand:
+        arguments: [null, '@simple_user.user_manager']
+        tags:
+            - { name: 'console.command' }

@@ -107,6 +107,25 @@ class UserManager
     }
 
     /**
+     * @param string $name
+     * @param string $description
+     * @return SimpleUserRoleInterface
+     */
+    public function createRole(string $name, string $description)
+    {
+        /** @var SimpleUserRoleInterface $role */
+        $role = new $this->simpleUserRoleClass();
+        $role->setName($name);
+        $role->setDescription($description);
+
+        $this->em->persist($role);
+        $this->em->flush();
+
+        return $role;
+    }
+
+
+    /**
      * @param string $roleName
      * @return SimpleUserRoleInterface
      */
@@ -116,14 +135,7 @@ class UserManager
         if ($role) {
             return $role;
         }
-        /** @var SimpleUserRoleInterface $role */
-        $role = new $this->simpleUserRoleClass();
-        $role->setName($roleName);
-        $role->setDescription('Auto generated role.');
 
-        $this->em->persist($role);
-        $this->em->flush();
-
-        return $role;
+        return $this->createRole($roleName,'Auto generated role.');
     }
 }

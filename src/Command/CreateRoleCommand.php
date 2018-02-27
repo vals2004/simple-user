@@ -2,6 +2,7 @@
 
 namespace SimpleUser\Command;
 
+use SimpleUser\Interfaces\SimpleUserRoleInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use SimpleUser\Service\UserManager;
 
 
-class CreateUserCommand extends Command
+class CreateRoleCommand extends Command
 {
     /**
      * @var UserManager
@@ -25,15 +26,11 @@ class CreateUserCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('simple-user:create-user')
-            ->addArgument('email', InputArgument::REQUIRED, 'The username of the user.')
-            ->addArgument('password', InputArgument::REQUIRED, 'The password of the user.')
-            ->addArgument(
-                'roles',
-                InputArgument::OPTIONAL,
-                'The roles of the user. Split by comma: ROLE_USER, ROLE_SONATA_ADMIN')
-            ->setDescription('Create a new user.')
-            ->setHelp('This command allows you to create a user')
+            ->setName('simple-user:create-role')
+            ->addArgument('role', InputArgument::REQUIRED, 'The name of the role in security.')
+            ->addArgument('description', InputArgument::REQUIRED, 'User friendly name for role.')
+            ->setDescription('Create role to with description.')
+            ->setHelp('This command allows you to create role.')
         ;
     }
 
@@ -45,18 +42,20 @@ class CreateUserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln([
-            'User Creator',
+            'Create Role',
             '============',
             '',
         ]);
 
-        $roles = explode(',', $input->getArgument('roles'));
-        $email = $input->getArgument('email');
-        $password  = $input->getArgument('password');
+        $roleName =  $input->getArgument('role');
+        $roleDescription = $input->getArgument('description');
 
-        $this->getUserManager()->createUser($email, $password, $roles);
-
-        $output->writeln('User successfully generated!');
+        $result = $this->getUserManager()->createRole($roleName, $roleDescription);
+        if ($result instanceof SimpleUserRoleInterface) {
+            $output->writeln(sprintf('Role# created!', $result->getId()));
+        } else {
+            $output->writeln('Role did not created!');
+        }
     }
 
     /**
