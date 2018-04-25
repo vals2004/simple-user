@@ -1,5 +1,5 @@
 {
-  "name": "tobur/simple-user",
+  "name": "vals2004/simple-user",
   "type": "symfony-bundle",
   "require": {
     "php": ">=7.1.3",
