@@ -111,6 +111,10 @@ abstract class User implements SimpleUserInterface
      */
     public function setPassword(?string $password): SimpleUserInterface
     {
+        if ($password === null) {
+            return null;
+        }
+
         $this->password = $password;
         return $this;
     }
