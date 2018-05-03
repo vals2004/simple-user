@@ -34,7 +34,7 @@ interface SimpleUserInterface extends AdvancedUserInterface, \Serializable, Equa
      * @param null|string $password
      * @return SimpleUserInterface
      */
-    public function setPassword(?string $password): self;
+    public function setPassword(?string $password): ?self;
 
     /**
      * @param null|string $salt
