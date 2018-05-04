@@ -25,6 +25,10 @@ class LoginType extends AbstractType
                 'required' => true,
                 'label' => 'Password',
             ])
+            ->add('_remember_me', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Remember me',
+            ])
             ->add('submit', SubmitType::class, ['label' => 'Sign In']);
     }
 
