@@ -52,7 +52,7 @@ interface SimpleUserInterface extends AdvancedUserInterface, \Serializable, Equa
      * @param bool $isEnabled
      * @return SimpleUserInterface
      */
-    public function setEnabled(bool $isEnabled): self;
+    public function setIsEnabled(bool $isEnabled): self;
 
     /**
      * @return null|string
