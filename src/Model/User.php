@@ -312,7 +312,7 @@ abstract class User implements SimpleUserInterface
      * @param bool $isEnabled
      * @return SimpleUserInterface
      */
-    public function setEnabled(bool $isEnabled): SimpleUserInterface
+    public function setIsEnabled(bool $isEnabled): SimpleUserInterface
     {
         $this->isEnabled = $isEnabled;
 
