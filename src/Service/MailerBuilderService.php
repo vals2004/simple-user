@@ -167,4 +167,14 @@ class MailerBuilderService
         return $this;
     }
 
+        /**
+     * @param array $addresses
+     * @return MailerBuilderService
+     */
+    public function setFrom(array $addresses): MailerBuilderService
+    {
+        $this->message->setFrom($addresses);
+
+        return $this;
+    }
 }
