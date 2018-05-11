@@ -94,7 +94,7 @@ class RegistrationController extends Controller
 
         if ($user) {
             $user->setConfirmHash(null);
-            $user->setEnabled(true);
+            $user->setIsEnabled(true);
             $em->flush();
             $token = new UsernamePasswordToken(
                 $user,
