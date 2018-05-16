@@ -81,7 +81,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Role extends BaseRole
 {
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="roles", cascade={"persist","remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="roles", cascade={"persist"})
      *
      * @var ArrayCollection
      */
